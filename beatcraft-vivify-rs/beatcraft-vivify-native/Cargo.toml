@@ -1,0 +1,17 @@
+[package]
+name = "beatcraft-vivify-native"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+name = "beatcraft_vivify"
+
+[profile.release]
+strip = "symbols"
+lto = true
+opt-level = 3
+
+[dependencies]
+jni = { version = "0.22.1" }
+java-jni-extras = { version = "0.0.8" }
