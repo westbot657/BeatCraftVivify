@@ -13,5 +13,5 @@ lto = true
 opt-level = 3
 
 [dependencies]
-jni = { version = "0.22.1" }
-java-jni-extras = { version = "0.0.8" }
+jni = { workspace = true }
+java-jni-extras = { workspace = true }
