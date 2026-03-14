@@ -24,6 +24,20 @@ configurations {
     }
 }
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
@@ -31,8 +45,25 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
+    modImplementation "maven.modrinth:vivecraft:${project.minecraft_version}-${project.vivecraft_version}-fabric"
+    modImplementation "maven.modrinth:beatcraft:${project.minecraft_version}-${project.beatcraft_version}-fabric"
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+}
+
+def rustDistDir = rootProject.ext.nativeDistDir
+
+tasks.register('copyNatives', Copy) {
+    from(rustDistDir) {
+        include "beatcraft_vivify*.dll"
+        include "beatcraft_vivify*.so"
+        rename { name ->
+            name.replaceAll(/beatcraft_vivify-[\d.]+\.dll/, "beatcraft_vivify.dll")
+                    .replaceAll(/beatcraft_vivify-[\d.]+\.so/, "beatcraft_vivify.so")
+        }
+    }
+    into "src/main/resources/natives"
 }
 
 processResources {
@@ -41,7 +72,11 @@ processResources {
     filesMatching('fabric.mod.json') {
         expand version: project.version
     }
+
+    dependsOn(copyNatives)
 }
+
+
 
 shadowJar {
     configurations = [project.configurations.shadowBundle]

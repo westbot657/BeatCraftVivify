@@ -2,6 +2,14 @@ architectury {
     common rootProject.enabled_platforms.split(',')
 }
 
+repositories {
+    mavenCentral()
+
+    maven {
+        url = "https://cursemaven.com"
+    }
+}
+
 dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,
     // which get remapped to the correct annotations on each platform.
@@ -9,4 +17,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
     modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
+
+    modCompileOnly "curse.maven:vivecraft-${vivecraft_curseforge_id}:${vivecraft_curseforge_file}"
+    modCompileOnly "curse.maven:beatcraft-${beatcraft_curseforge_id}:${beatcraft_curseforge_file}"
+
 }
